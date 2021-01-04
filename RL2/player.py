@@ -188,8 +188,7 @@ class PlayerControllerRL(PlayerController, FishesModelling):
         # ADD YOUR CODE SNIPPET BETWEEN EX. 2.3
         # Change the while loop to incorporate a threshold limit, to stop training when the mean difference
         # in the Q table is lower than the threshold
-        #& diff >= self.threshold
-        while episode <= self.episode_max :
+        while episode <= self.episode_max and diff >= self.threshold:
             # ADD YOUR CODE SNIPPET BETWEENEX. 2.3
 
             s_current = init_pos
@@ -201,38 +200,11 @@ class PlayerControllerRL(PlayerController, FishesModelling):
 
                 # ADD YOUR CODE SNIPPET BETWEEN EX 2.1 and 2.2
                 # Chose an action from all possible actions
-
-
-                # "left": (-1, 0),
-                # "right": (1, 0),
-                # "down": (0, -1),
-                # "up": (0, 1)
-                # print(init_pos)
-                # print(Q[s_current,0])
-                # print(Q[s_current,1])
-                # print(Q[s_current,2])
-                # print(Q[s_current,3])
                 # time.sleep(2)
-
-                # highestValue = float('-inf')
                 indexWithHighestValue = np.nanargmax(Q[s_current])
-                # print(Q[s_current])
-                # print(indexWithHighestValue)
-
-                # for s in list_pos:
-                #     if Q[s_current,s] > highestValue & math.isnan(Q[s_current,s]) != true:
-                #         highestValue = Q[s_current,s]
-                #         indexWithHighestValue = s
-
-
-
                 # selection of action
                 
                 action_str = self.action_list[indexWithHighestValue]
-                # print("choosing")
-                # print(indexWithHighestValue)
-                # print("----------")
-
                 # ADD YOUR CODE SNIPPET BETWEEN EX 2.1 and 2.2
 
                 # ADD YOUR CODE SNIPPET BETWEEN EX 5
@@ -267,7 +239,7 @@ class PlayerControllerRL(PlayerController, FishesModelling):
 
             # ADD YOUR CODE SNIPPET BETWEEN EX. 2.3
             # Compute the absolute value of the mean between the Q and Q-old
-            diff = 100
+            diff = np.abs(np.nanmean(Q) - np.nanmean(Q_old))
             # ADD YOUR CODE SNIPPET BETWEEN EX. 2.3
             Q_old[:] = Q
             print(
