@@ -104,9 +104,11 @@ def epsilon_greedy(Q,
         # Implemenmt the epsilon-greedy algorithm for a constant epsilon value
         # Use epsilon and all input arguments of epsilon_greedy you see fit
         # It is recommended you use the np.random module
-        if np.nanargmax(state) > epsilon:
-            action = np.nanargmax(state)
+        randomNumber = np.random.rand()
+
+        if randomNumber > epsilon :
             #Highest value is above epsilon limit, be greedy
+            action = np.nanargmax(state)
         else:
             while True:
                 #epsilon value is higher, explore random action
@@ -123,7 +125,25 @@ def epsilon_greedy(Q,
         # Use epsilon and all input arguments of epsilon_greedy you see fit
         # use the ScheduleLinear class
         # It is recommended you use the np.random module
-        action = None
+        deltaEpsilon = epsilon_final - epsilon_initial 
+
+        timestepEpsilon = epsilon_initial + deltaEpsilon * (current_total_steps / anneal_timesteps)
+        randomNumber = np.random.rand()
+
+        if timestepEpsilon < epsilon_final:
+            timestepEpsilon = epsilon_final
+
+        if randomNumber > timestepEpsilon:
+            action = np.nanargmax(state)
+            #Highest value is above epsilon limit, be greedy
+        else:
+            while True:
+                #epsilon value is higher, explore random action
+                a = np.array(state)
+                value = random.choice(list(enumerate(a)))
+                if math.isnan(value[1]) == False:
+                    action = value[0]
+                    break
         # ADD YOUR CODE SNIPPET BETWEENEX  3.2
 
     else:
@@ -219,10 +239,19 @@ class PlayerControllerRL(PlayerController, FishesModelling):
                 # ADD YOUR CODE SNIPPET BETWEEN EX 2.1 and 2.2
 
                 # ADD YOUR CODE SNIPPET BETWEEN EX 5
-                indexWithHighestValue = epsilon_greedy(Q, Q[s_current], list_pos)
+                # Use the epsilon greedy algorithm to retrieve an action
+                indexWithHighestValue = epsilon_greedy(
+                    Q, 
+                    Q[s_current], 
+                    list_pos, 
+                    current_total_steps,
+                    1,
+                    0.2,
+                    10000,
+                    "linear"
+                    )
                 action_str = self.action_list[indexWithHighestValue]
 
-                # Use the epsilon greedy algorithm to retrieve an action
                 # ADD YOUR CODE SNIPPET BETWEEN EX 5
 
                 # compute reward
